@@ -1,0 +1,10 @@
+LICENSE.txt
+README.md
+pyproject.toml
+setup.cfg
+pfgadgets/__init__.py
+pfgadgets/pfgadgets.py
+pfgadgets.egg-info/PKG-INFO
+pfgadgets.egg-info/SOURCES.txt
+pfgadgets.egg-info/dependency_links.txt
+pfgadgets.egg-info/top_level.txt
