@@ -95,7 +95,7 @@ class GetData:
                     if not objType == None:
                         result = objType.GetAttribute(attribute)
                     else:
-                        result = 'NA'
+                        result = float("NaN")
                 results.append(result)
             resultsFrame.loc[len(resultsFrame)] = results
 
