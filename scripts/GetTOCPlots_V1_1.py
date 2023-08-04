@@ -15,7 +15,7 @@ Description: This script sets up a TOC plot page with relevant devices, runs fau
 Inputs: faultTypes -List of types of faults to run during short-circuit calculation
         maximum - Name of operation scenario used for maximum fault case
         minimum - Name of operation scenario used for minimum fault case
-        deviceDict - List of dictionaries containing the terminal to run short-circuit calculation on and associated TOC plot
+        plotDict - List of dictionaries containing the terminal to run short-circuit calculation on and associated TOC plot
 """
 
 #Get PowerFactory application
@@ -33,7 +33,7 @@ maximum = ['Operation Scenario']
 minimum = ['Operation Scenario']
 
 #Define dictionary contatining terminals to run short-circuit and associated devices to display in TOC plot
-deviceDict = [{'terminal': ['A0S01-SB-NF-001'], 'plot': ['P0S01-SB-NF-001_A0S01-SB-NF-001']},
+plotDict = [{'terminal': ['A0S01-SB-NF-001'], 'plot': ['P0S01-SB-NF-001_A0S01-SB-NF-001']},
               {'terminal': ['A0S01-TX-FB-001 HV Bushing'], 'plot': ['P0S01-SB-NF-001_A0S01-SB-NB-001']},
               {'terminal': ['A0S01-SB-NB-001'], 'plot': ['P0S01-SB-NF-001_A0S01-SB-NB-001']},
               {'terminal': ['A0S02-TX-FB-001 HV Bushing'], 'plot': ['P0S01-SB-NF-001_A0S02-SB-NB-001']},
@@ -49,25 +49,25 @@ deviceDict = [{'terminal': ['A0S01-SB-NF-001'], 'plot': ['P0S01-SB-NF-001_A0S01-
 path = os.getcwd() + '/TOCPlots'
 
 #Iterate through length of device dictrionary
-for i in range(len(deviceDict)):
-    j = len(deviceDict) - i
+for i in range(len(plotDict)):
+    j = len(plotDict) - i
     app.PrintPlain('\nTerminals remaining: %s' % (j))
     #Iterate through fault types
     for faultType in faultTypes:
         #Iterate through maximum and minimum fault cases
         for calculate in range(0,2):
             #Get plot, plot title and plot settings
-            plotName = deviceDict[i]['plot'][0]
+            plotName = plotDict[i]['plot'][0]
             plot = GetPlot(plotName, pageType='SetVipage')
             plotTitle = plot.title
             plotSettings = plot.plot.GetContents('*.VisOcplot')[0]
             OCPLotSettings = plotSettings.GetContents('*.SetOcplt')[0]
             
-            #Define lists to store terminal and associated device objects defined in deviceDict
+            #Define lists to store terminal and associated device objects defined in plotDict
             terminalList = []
-            terminalNames = deviceDict[i]['terminal']
+            terminalNames = plotDict[i]['terminal']
 
-            #Grab PF objects from names in deviceDict and store in list
+            #Grab PF objects from names in plotDict and store in list
             for terminalName in terminalNames:
                 terminal = GetObject(terminalName).obj
                 terminalList.append(terminal)
