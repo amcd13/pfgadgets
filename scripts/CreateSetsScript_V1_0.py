@@ -1,14 +1,14 @@
 import powerfactory as pf
 import os
 import pandas as pd
-from PFClasses_V1_1 import createSet
+from pfgadgets import CreateSet
 
 """
 Version: 1.0
 
 Author: Andrew McDermott
 
-Dependencies: PFClasses module
+Dependencies: pfgadgets module
 
 Description: This script creates sets intended to store references to
              objects relevant to load flow and short-circuit calculations
@@ -32,9 +32,9 @@ scSetNames = ['Short-Circuit Set']
 
 #Create sets
 for generalSetName in generalSetNames:
-    createSet(generalSetName)
+    CreateSet(generalSetName)
 for scSetName in scSetNames:
-    createSet(scSetName, setType=1)
+    CreateSet(scSetName, setType=1)
 
 
 
