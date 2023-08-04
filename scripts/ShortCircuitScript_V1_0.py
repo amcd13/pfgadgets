@@ -1,14 +1,14 @@
 import powerfactory as pf
 import os
 import pandas as pd
-from PFClasses_V1_1 import shortCircuit, getData
+from pfgadgets import ShortCircuit, GetData
 
 """
 Version: 1.0
 
 Author: Andrew McDermott
 
-Dependencies: PFClasses module
+Dependencies: pfgadgets module
 
 Description: This script excutes a short-circuit calculation and exports
              the results to csv files
@@ -53,23 +53,23 @@ for faultType in faultTypes:
     for calculate in range(0,2):
         #Change fault calculation based on maximum or minimum case
         if calculate == 0:
-            #Execute shortCircuit maximum command
-            shortCircuit(scSetName, faultType=faultType, calculate=calculate, setSelect=True, opScen=maximum)
+            #Execute ShortCircuit maximum command
+            ShortCircuit(scSetName, faultType=faultType, calculate=calculate, setSelect=True, opScen=maximum)
             #Define file name for export
             fileName = 'ShortCircuitData_%s_%s' % (faultType, 'Max')
         else:
-            #Execute shortCircuit minimum command
-            shortCircuit(scSetName, faultType=faultType, calculate=calculate, setSelect=True, opScen=minimum)
+            #Execute ShortCircuit minimum command
+            ShortCircuit(scSetName, faultType=faultType, calculate=calculate, setSelect=True, opScen=minimum)
             #Define file name for export
             fileName = 'ShortCircuitData_%s_%s' % (faultType, 'Min')
 
         #Collect data based on fault type
         if faultType == '3psc':
             #Collect objects data
-            scData = getData(scSetName, sc3pscAttributes)
+            scData = GetData(scSetName, sc3pscAttributes)
         elif faultType == 'spgf':
             #Collect objects data
-            scData = getData(scSetName, scSpgfAttributes)
+            scData = GetData(scSetName, scSpgfAttributes)
 
         #Export data    
         scData.export(fileName=fileName, filePath=filePath, replace=True)
