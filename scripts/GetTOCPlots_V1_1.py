@@ -1,14 +1,14 @@
 import powerfactory as pf
 import os
 import pandas as pd
-from PFClasses_V1_1 import shortCircuit, getPlot, getObject
+from pfgadgets import ShortCircuit, GetPlot, GetObject
 
 """
 Version: 1.1
 
 Author: Andrew McDermott
 
-Dependencies: PFClasses module
+Dependencies: Ppfgadgets module
 
 Description: This script sets up a TOC plot page with relevant devices, runs fault cases and exports the plot
 
@@ -58,7 +58,7 @@ for i in range(len(deviceDict)):
         for calculate in range(0,2):
             #Get plot, plot title and plot settings
             plotName = deviceDict[i]['plot'][0]
-            plot = getPlot(plotName, pageType='SetVipage')
+            plot = GetPlot(plotName, pageType='SetVipage')
             plotTitle = plot.title
             plotSettings = plot.plot.GetContents('*.VisOcplot')[0]
             OCPLotSettings = plotSettings.GetContents('*.SetOcplt')[0]
@@ -69,19 +69,19 @@ for i in range(len(deviceDict)):
 
             #Grab PF objects from names in deviceDict and store in list
             for terminalName in terminalNames:
-                terminal = getObject(terminalName).obj
+                terminal = GetObject(terminalName).obj
                 terminalList.append(terminal)
             
             #Change fault calculation based on maximum or minimum case
             if calculate == 0:
-                #Execute shortCircuit maximum command
-                shortCircuit(terminal.loc_name, faultType=faultType, calculate=calculate, setSelect=None, opScen=maximum)
+                #Execute ShortCircuit maximum command
+                ShortCircuit(terminal.loc_name, faultType=faultType, calculate=calculate, setSelect=None, opScen=maximum)
                 #Define file name for export
                 fileName = 'ShortCircuitData_%s_%s' % (faultType, 'Max')
                 maxOrMin = 'Maximum'
             else:
-                #Execute shortCircuit minimum command
-                shortCircuit(terminal.loc_name, faultType=faultType, calculate=calculate, setSelect=None, opScen=minimum)
+                #Execute ShortCircuit minimum command
+                ShortCircuit(terminal.loc_name, faultType=faultType, calculate=calculate, setSelect=None, opScen=minimum)
                 #Define file name for export
                 fileName = 'ShortCircuitData_%s_%s' % (faultType, 'Min')
                 maxOrMin = 'Minimum'
