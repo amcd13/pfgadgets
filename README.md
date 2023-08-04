@@ -13,7 +13,7 @@ Description: This package is designed to assist in the use of python within the 
 - ShortCircuit
 
 ## Class Description
-### pftools.CreateSet
+### pfgadgets.CreateSet
 *__CreateSet(setName, *args, setType=5, studyCaseName=None)__*
 
 *Description*: This class is designed to create a set
@@ -26,7 +26,7 @@ Description: This package is designed to assist in the use of python within the 
 *Attributes*: 
 - .set - Returns the created set object
 ---
-### pftools.FrequencySweep
+### pfgadgets.FrequencySweep
 *__FrequencySweep(*args, method=0, init=0, start=50, stop=2500, results=None)__*
 
 *Description*: This class is designed to perform a frequency sweep calaculation
@@ -38,7 +38,7 @@ Description: This package is designed to assist in the use of python within the 
 - stop - defines the ending frequency
 - results - defines which results variable to save results to
 ---
-### pftools.GetData
+### pfgadgets.GetData
 *__GetData(setName, attributeList, *args, resultHeadings=None)__*
 
 *Description*: This class is designed to collect data from a set and offers export to csv option
@@ -54,8 +54,8 @@ Description: This package is designed to assist in the use of python within the 
 - .attribute - Returns list of attributes that was collected
 - .result - Returns the results data frame that holds the extracted data
 ---
-### pftools.GetData.export
-*__pftools.GetData.export(fileName = 'results', filePath =  None, replace=False)__*
+### pfgadgets.GetData.export
+*__pfgadgets.GetData.export(fileName = 'results', filePath =  None, replace=False)__*
 
 *Description*: Exports the collected data to a csv
 
@@ -64,8 +64,8 @@ Description: This package is designed to assist in the use of python within the 
 - filePath - Defines directory where csv will export to. If None then export to script directory
 - replace - Defines whether to replace existing files or not. (False - do not replace existing, True - replace existing)
 ---
-### pftools.GetObject
-*__pftools.GetObject(objectName)__*
+### pfgadgets.GetObject
+*__pfgadgets.GetObject(objectName)__*
 
 *Description*: This class is deisnged to collect a given object
 
@@ -76,8 +76,8 @@ Description: This package is designed to assist in the use of python within the 
 - .obj - Returns the collected object
 - .name - Returns the name of the collected object
 ---
-### pftools.GetPlot
-*__pftools.GetPlot(plotName, pageType='SetVipage')__*
+### pfgadgets.GetPlot
+*__pfgadgets.GetPlot(plotName, pageType='SetVipage')__*
 
 *Description*: This class is designed to collect a plot page and offers an export option
 
@@ -89,8 +89,8 @@ Description: This package is designed to assist in the use of python within the 
 - .plot - Returns to plot objects that was collected
 - .title - Returns the title object that may be included in a plot page
 ---
-### pftools.GetPlot.export
-*__pftools.GetPlot.export(*args, fileType='wmf', filePath=None, frame = 0, fileName=None, replace=False)__*
+### pfgadgets.GetPlot.export
+*__pfgadgets.GetPlot.export(*args, fileType='wmf', filePath=None, frame = 0, fileName=None, replace=False)__*
 
 *Description*: Exports the plot page to the desired type and location
 
@@ -101,16 +101,16 @@ Description: This package is designed to assist in the use of python within the 
 - fileName - Name of file that data will export to. Should not include file extension.
 - replace - Defines whether to replace existing files or not. (False - do not replace existing, True - replace existing)
 ---
-### pftools.HarmonicLoadFlow
-*__pftools.HarmonicLoadFlow(*args, method=0)__*
+### pfgadgets.HarmonicLoadFlow
+*__pfgadgets.HarmonicLoadFlow(*args, method=0)__*
 
 *Description*: This class is designed to perform a harmonic load flow calcualtion
 
 *Parameters*: 
 - method - defines the harmonic load flow method (0 - balanced, 1 - unbalanced)
 ---
-### pftools.LoadFlow
-*__pftools.LoadFlow(method=0, autoTap=0, feederScaling=0, opScen=None)__*
+### pfgadgets.LoadFlow
+*__pfgadgets.LoadFlow(method=0, autoTap=0, feederScaling=0, opScen=None)__*
 
 *Description*: This class is designed to perform a load flow calculation
 
@@ -120,8 +120,8 @@ Description: This package is designed to assist in the use of python within the 
 - feederScaling - defines whether to enable feeder load scaling (0 - off, 1 - on)
 - opScen - defines the operation scenario to activate before calculation (if None then then no operation sceanrio will be activated)
 ---
-### pftools.ShortCircuit
-*__pftools.ShortCircuit(objectName, faultType='3psc', calculate=0, setSelect=None, opScen=None)__*
+### pfgadgets.ShortCircuit
+*__pfgadgets.ShortCircuit(objectName, faultType='3psc', calculate=0, setSelect=None, opScen=None)__*
 
 *Description*: This class is designed to perform a short-circuit calculation
 
