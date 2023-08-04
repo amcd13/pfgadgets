@@ -1,14 +1,14 @@
 import powerfactory as pf
 import os
 import pandas as pd
-from PFClasses_V1_1 import harmonicLoadFlow, frequencySweep, getPlot, getObject, getData
+from pfgadgets import HarmonicLoadFlow, FrequencySweep, GetPlot, GetObject, GetData
 
 """
 Version: 1.0
 
 Author: Andrew McDermott
 
-Dependencies: PFClasses module
+Dependencies: pfgadgets module
 
 Description: This script runs both harmonic load flow and frequency sweep calculations and exports associated plots and data
 
@@ -40,9 +40,9 @@ terminalAttributes = ['m:THD']
 ############################################################
 
 #Get external grid, plot pages and title objects
-externalGrid = getObject(externalGridName).obj
-distortionPlot = getPlot(distortionPlotName, pageType='GrpPage')
-frequencyPlot = getPlot(frequencyPlotName, pageType='GrpPage')
+externalGrid = GetObject(externalGridName).obj
+distortionPlot = GetPlot(distortionPlotName, pageType='GrpPage')
+frequencyPlot = GetPlot(frequencyPlotName, pageType='GrpPage')
 title = distortionPlot.title
 
 #Clear title strings
@@ -66,10 +66,10 @@ for i in range(2):
     frequencyFileName = 'FrequencySweep_%s' % (maxOrMin[i])
 
     #Execute harmonic load flow
-    harmonicLoadFlow()
+    HarmonicLoadFlow()
 
     #Get harmonic load flow data and export
-    harmonicData = getData(terminalSetName, terminalAttributes)
+    harmonicData = GetData(terminalSetName, terminalAttributes)
     harmonicData.export(filePath=path, fileName=harmonicFileName, replace=True)
 
     #Alter title block and export harmonic distortion plot
@@ -77,7 +77,7 @@ for i in range(2):
     distortionPlot.export(filePath=path, fileName=harmonicFileName, replace=True, frame=1)
 
     #Execute frequency sweep 
-    frequencySweep()
+    FrequencySweep()
 
     #Export frequency sweep plot
     frequencyPlot.export(filePath=path, fileName=frequencyFileName, replace=True, frame=1)
