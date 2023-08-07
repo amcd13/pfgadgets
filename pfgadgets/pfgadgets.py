@@ -236,6 +236,8 @@ class GetResult:
         res.iopt_exp = 6
         res.f_name = path
 
+        res.Execute()
+
 #Define class for performing harmonic load flow calculation
 class HarmonicLoadFlow:
     def __init__(self, *args, method=0):
