@@ -202,6 +202,40 @@ class GetPlot:
         wr.Execute()
         app.PrintPlain("Exported '%s' plot to: %s" % (plot.loc_name, path))
 
+#Define class for retriving data from results file
+class GetResult:
+    def __init__(self, resultsFile, *args, filePath=None, fileName='result', replace=None):
+        #Get result export command
+        res = app.GetFromStudyCase('ComRes')
+        studyCase = app.GetActiveStudyCase()
+        resultObject = studyCase.GetContents(resultsFile)[0]
+
+        #Define file path to save results based on if filePath input given
+        if filePath == None:
+            path = os.getcwd() + ('\%s' % (fileName)) + '.csv'
+        else:
+            path = filePath + ('\%s' % (fileName)) + '.csv'
+
+        if filePath != None:
+            if not os.path.exists(filePath):
+                os.makedirs(filePath)
+
+        #If replace is False then edit file name to include (i) suffix
+        if not replace:
+            i = 1
+            #Define file path to save results based on if filePath input given
+            while os.path.isfile(filePath):
+                if filePath == None:
+                    path = os.getcwd() + ('\%s' % (fileName)) + ('(%s)' % (i)) + '.csv'
+                    i += 1
+                else:
+                    path = filePath + ('\%s' % (fileName)) + ('(%s)' % (i)) + '.csv'
+                    i += 1
+
+        res.pResult = resultObject
+        res.iopt_exp = 6
+        res.f_name = path
+
 #Define class for performing harmonic load flow calculation
 class HarmonicLoadFlow:
     def __init__(self, *args, method=0):
