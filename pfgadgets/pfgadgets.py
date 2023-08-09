@@ -4,6 +4,7 @@ import pandas as pd
 
 app = pf.GetApplication()
 
+
 # Define class to make sets
 class CreateSet:
     def __init__(self, set_name, set_type=5, sc_name=None):
