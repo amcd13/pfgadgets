@@ -29,62 +29,65 @@ app = pf.GetApplication()
 app.EchoOff()
 app.ClearOutputWindow()
 
-######### INPUTS ############################################
+#############################################################
+# INPUTS
 
 # Define set names
-terminalSetName = 'Terminals'
-lineSetName = 'Lines'
-transformerSetName = 'Transformers'
+terminal_set_name = 'Terminals'
+line_set_name = 'Lines'
+transformer_set_name = 'Transformers'
 
 # Define object attributes to collect from load flow results
-terminalAttributes = ['e:uknom', 'm:u', 'm:Ul', 'Ir']
-lineAttributes = ['Inom', 'c:loading']
-transformerAttributes = ['Snom', 'c:loading', 'n:u:bushv', 'n:u:buslv', 'c:nntap']
+terminal_attributes = ['e:uknom', 'm:u', 'm:Ul', 'Ir']
+line_attributes = ['Inom', 'c:loading']
+transformer_attributes = ['Snom', 'c:loading', 'n:u:bushv', 'n:u:buslv', 'c:nntap']
 
 # Define headings for results
-terminalHeadings = ['Name', 'Rated Voltage (kV)', 'Voltage (pu)', 'Voltage (kV)', 'Rated Current (kA)']
-lineHeadings = ['Name', 'Rated Current (kA)', 'Loading (%)']
-transformerHeadings = ['Name', 'Rated Power (MVA)', 'Loading (%)', 'HV Voltage (kV)', 'LV Voltage (kV)', 'Tap Position']
+terminal_headings = ['Name', 'Rated Voltage (kV)', 'Voltage (pu)', 'Voltage (kV)', 'Rated Current (kA)']
+line_headings = ['Name', 'Rated Current (kA)', 'Loading (%)']
+transformer_headings = ['Name', 'Rated Power (MVA)', 'Loading (%)',
+                        'HV Voltage (kV)', 'LV Voltage (kV)', 'Tap Position']
 
 # Define operation scenarios to perform load flow analysis on
-operationScenarios = ['Maximum Normal Load', 'Peak Load']
+operation_scenarios = ['Maximum Normal Load', 'Peak Load']
 
 #############################################################
 
 # Initialise dataframes to store results
-allTerminalResults = pd.DataFrame()
-allLineResults = pd.DataFrame()
-allTransformerResults = pd.DataFrame()
+all_terminal_results = pd.DataFrame()
+all_line_results = pd.DataFrame()
+all_transformer_results = pd.DataFrame()
 
 # Get script path and make results directory
-scriptPath = os.getcwd()
-resultsPath = scriptPath + '\\LoadFlowResults\\'
+script_path = os.getcwd()
+results_path = script_path + '\\LoadFlowResults\\'
 
-if not os.path.exists(resultsPath):
-    os.mkdir(resultsPath)
+if not os.path.exists(results_path):
+    os.mkdir(results_path)
 
 # Iterate trough operation scenarios
-for operationScenario in operationScenarios:
+for operation_scenario in operation_scenarios:
     # Execute LoadFlow command
-    LoadFlow(method=0, autoTap=0, feederScaling=0, opScen=operationScenario)
+    LoadFlow(method=0, auto_tap=0, feeder_scaling=0, op_scen=operation_scenario)
 
     # Collect objects data
-    terminalDataFrame = GetData(terminalSetName, terminalAttributes, resultHeadings=terminalHeadings).result
-    lineDataFrame = GetData(lineSetName, lineAttributes, resultHeadings=lineHeadings).result
-    transformerDataFrame = GetData(transformerSetName, transformerAttributes, resultHeadings=transformerHeadings).result
+    terminal_df = GetData(terminal_set_name, terminal_attributes, result_headings=terminal_headings).result
+    line_df = GetData(line_set_name, line_attributes, result_headings=line_headings).result
+    transformer_df = GetData(transformer_set_name, transformer_attributes, result_headings=transformer_headings).result
 
     # Insert column with operation scenario name
-    terminalDataFrame.insert(0, 'Scenario', [operationScenario] * terminalDataFrame.shape[0])
-    lineDataFrame.insert(0, 'Scenario', [operationScenario] * lineDataFrame.shape[0])
-    transformerDataFrame.insert(0, 'Scenario', [operationScenario] * transformerDataFrame.shape[0])
+    terminal_df.insert(0, 'Scenario', [operation_scenario] * terminal_df.shape[0])
+    line_df.insert(0, 'Scenario', [operation_scenario] * line_df.shape[0])
+    transformer_df.insert(0, 'Scenario', [operation_scenario] * transformer_df.shape[0])
 
     # Append scenario results to master data frames
-    allTerminalResults = pd.concat([allTerminalResults, terminalDataFrame])
-    allLineResults = pd.concat([allLineResults, lineDataFrame])
-    allTransformerResults = pd.concat([allTransformerResults, transformerDataFrame])
+    all_terminal_results = pd.concat([all_terminal_results, terminal_df])
+    all_line_results = pd.concat([all_line_results, line_df])
+    all_transformer_results = pd.concat([all_transformer_results, transformer_df])
 
 # Write results to xlsx workbook in separate sheets
-with pd.ExcelWriter(resultsPath + 'LoadFlowResults.xlsx') as writer:
-    allTerminalResults.to_excel(writer, sheet_name='Terminal', index=False)
-    allLineResults.to_excel(writer, sheet_name='Line', index=False)
-    allTransformerResults.to_excel(writer, sheet_name='Transformer', index=False)
+with pd.ExcelWriter(results_path + 'LoadFlowResults.xlsx') as writer:
+    all_terminal_results.to_excel(writer, sheet_name='Terminal', index=False)
+    all_line_results.to_excel(writer, sheet_name='Line', index=False)
+    all_transformer_results.to_excel(writer, sheet_name='Transformer', index=False)
+    app.PrintPlain('Load flow results written to: %s' % (results_path + 'LoadFlowResults.xlsx'))
