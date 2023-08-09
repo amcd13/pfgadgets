@@ -122,26 +122,27 @@ Description: This package is designed to assist in the use of python within the 
 - method - defines the harmonic load flow method (0 - balanced, 1 - unbalanced)
 ---
 ### pfgadgets.LoadFlow
-*__pfgadgets.LoadFlow(method=0, autoTap=0, feederScaling=0, opScen=None)__*
+*__pfgadgets.LoadFlow(method=0, auto_tap=0, feeder_scaling=0, op_scen=None)__*
 
 *Description*: This class is designed to perform a load flow calculation
 
 *Parameters*: 
 - method - defines the load flow method (0 - balanced, 1 - unbalanced)
-- autoTap - defines whether to enable automatic tap changing (0 - off, 1 - on)
-- feederScaling - defines whether to enable feeder load scaling (0 - off, 1 - on)
-- opScen - defines the operation scenario to activate before calculation (if None then no operation scenario will be activated)
+- auto_tap - defines whether to enable automatic tap changing (0 - off, 1 - on)
+- feeder_scaling - defines whether to enable feeder load scaling (0 - off, 1 - on)
+- op_scen - defines the operation scenario to activate before calculation (if None then no operation scenario will be activated)
 ---
 ### pfgadgets.ShortCircuit
-*__pfgadgets.ShortCircuit(object_name, faultType='3psc', calculate=0, setSelect=None, opScen=None)__*
+*__pfgadgets.ShortCircuit(object_name, faultType='3psc', calculate=0, set_select=None, op_scen=None)__*
 
 *Description*: This class is designed to perform a short-circuit calculation
 
 *Parameters*: 
 - object_name - Name of object to perform short-circuit calculation on. If setSelect!=None then a set can be passed instead of an object
-- faultType - Defines the type of fault to use during short-circuit calculation
+- fault_type - Defines the type of fault to use during short-circuit calculation
 - calculate - Defines whether to use maximum or minimum fault calculation (0 - maximum, 1 - minimum)
-- setSelect - Defines whether a set or single object is used for calculation (None - single object, != None - set)
+- set_select - Defines whether a set or single object is used for calculation (None - single object, != None - set)
+- op_scen - defines the operation scenario to activate before calculation (if None then no operation scenario will be activated)
 
 *Attributes*: 
 - .obj - Returns object/s where short-circuit calculation was performed
