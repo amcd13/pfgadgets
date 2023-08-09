@@ -5,6 +5,7 @@
 - Updated naming convention to allign with PEP8
   - Applies to both pfgadgets & scripts
 - Added exception raises for common error in pfgadgets
+- Added class GetResult
 
 ## 0.0.2 - (2023-08-05)
 
