@@ -11,11 +11,11 @@ Dependencies: pfgadgets module
 
 Description: This script runs both harmonic load flow and frequency sweep calculations and exports associated plots and data
 
-Inputs: externalGridName - Name of the external grid element to modify
-        distortionPlotName - Name of the harmonic distortion plot page
-        frequencyPlotName - Name of the frequency sweep plot page
-        terminalSetName - Name of the set containing refrences to terminals to grab data from after harmonic load flow
-        terminalAttributes - List of attributes to export after harmonic load flow
+Inputs: external_grid_name - Name of the external grid element to modify
+        distortion_plot_name - Name of the harmonic distortion plot page
+        frequency_plot_name - Name of the frequency sweep plot page
+        terminal_set_name - Name of the set containing refrences to terminals to grab data from after harmonic load flow
+        terminal_attributes - List of attributes to export after harmonic load flow
 """
 
 # Get PowerFactory application
