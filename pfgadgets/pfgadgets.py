@@ -383,7 +383,10 @@ class ShortCircuit:
             shc.shcobj = general_set
         else:
             network_data = app.GetProjectFolder('netdat')
-            obj = network_data.GetContents(object_name, 1)[0]
+            try:
+                obj = network_data.GetContents(object_name, 1)[0]
+            except IndexError:
+                raise Exception('Unable to find element: %s' % object_name)
             shc.shcobj = obj
 
         # Execute short circuit command
