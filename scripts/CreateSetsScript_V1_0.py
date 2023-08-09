@@ -1,41 +1,22 @@
 import powerfactory as pf
-import os
-import pandas as pd
 from pfgadgets import CreateSet
 
-"""
-Version: 1.0
-
-Author: Andrew McDermott
-
-Dependencies: pfgadgets module
-
-Description: This script creates sets intended to store references to
-             objects relevant to load flow and short-circuit calculations
-
-Inputs: generalSetNames - List of names of general sets to create
-        scSetNames - List of name of short-circuit sets to create
-"""
-
-#Get PowerFactory application
+# Get PowerFactory application
 app = pf.GetApplication()
 app.EchoOff()
 app.ClearOutputWindow()
 
-########### INPUTS #########################################
+############################################################
+# INPUTS
 
-#Define set names
-generalSetNames = ['Terminals', 'Lines', 'Transformers', 'Harmonic Set']
-scSetNames = ['Short-Circuit Set']
+# Define set names
+general_set_names = ['Terminals', 'Lines', 'Transformers', 'Harmonic Set']
+sc_set_names = ['Short-Circuit Set']
 
 ############################################################
 
-#Create sets
-for generalSetName in generalSetNames:
-    CreateSet(generalSetName)
-for scSetName in scSetNames:
-    CreateSet(scSetName, setType=1)
-
-
-
-
+# Create sets
+for general_set_name in general_set_names:
+    CreateSet(general_set_name)
+for sc_set_name in sc_set_names:
+    CreateSet(sc_set_name, set_type=1)
