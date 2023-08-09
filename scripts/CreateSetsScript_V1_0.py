@@ -1,6 +1,20 @@
 import powerfactory as pf
 from pfgadgets import CreateSet
 
+"""
+Version: 1.0
+
+Author: Andrew McDermott
+
+Dependencies: pfgadgets module
+
+Description: This script creates sets intended to store references to
+             objects relevant to load flow and short-circuit calculations
+
+Inputs: general_set_names - List of names of general sets to create
+        sc_set_names - List of name of short-circuit sets to create
+"""
+
 # Get PowerFactory application
 app = pf.GetApplication()
 app.EchoOff()
