@@ -7,14 +7,14 @@ Version: 1.1
 
 Author: Andrew McDermott
 
-Dependencies: Ppfgadgets module
+Dependencies: pfgadgets module
 
 Description: This script sets up a TOC plot page with relevant devices, runs fault cases and exports the plot
 
-Inputs: faultTypes -List of types of faults to run during short-circuit calculation
+Inputs: fault_types -List of types of faults to run during short-circuit calculation
         maximum - Name of operation scenario used for maximum fault case
         minimum - Name of operation scenario used for minimum fault case
-        plotDict - List of dictionaries containing the terminal to run short-circuit calculation on and associated TOC plot
+        plot_dict - List of dictionaries containing the terminal to run short-circuit calculation on and associated TOC plot
 """
 
 # Get PowerFactory application
