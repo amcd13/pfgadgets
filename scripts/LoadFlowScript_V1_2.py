@@ -1,6 +1,5 @@
 import powerfactory as pf
 import os
-import pandas as pd
 from pfgadgets import LoadFlow, GetData
 
 """
@@ -32,62 +31,48 @@ app.ClearOutputWindow()
 #############################################################
 # INPUTS
 
-# Define set names
-terminal_set_name = 'Terminals'
-line_set_name = 'Lines'
-transformer_set_name = 'Transformers'
+# Define fault types to run
+fault_types = ['3psc', 'spgf']
 
-# Define object attributes to collect from load flow results
-terminal_attributes = ['e:uknom', 'm:u', 'm:Ul', 'Ir']
-line_attributes = ['Inom', 'c:loading']
-transformer_attributes = ['Snom', 'c:loading', 'n:u:bushv', 'n:u:buslv', 'c:nntap']
+# Define maximum and minimum operation scenarios
+maximum = ['Operation Scenario']
+minimum = ['Operation Scenario']
 
-# Define headings for results
-terminal_headings = ['Name', 'Rated Voltage (kV)', 'Voltage (pu)', 'Voltage (kV)', 'Rated Current (kA)']
-line_headings = ['Name', 'Rated Current (kA)', 'Loading (%)']
-transformer_headings = ['Name', 'Rated Power (MVA)', 'Loading (%)',
-                        'HV Voltage (kV)', 'LV Voltage (kV)', 'Tap Position']
+# Setup set names
+sc_set_name = 'Short-Circuit Set'
 
-# Define operation scenarios to perform load flow analysis on
-operation_scenarios = ['Maximum Normal Load', 'Peak Load']
+# Setup object attributes to collect from load flow results
+sc3p_attributes = ['m:Ikss', 'm:Skss']
+scgf_attributes = ['m:Ikss:A', 'm:Skss:A']
 
 #############################################################
 
-# Initialise dataframes to store results
-all_terminal_results = pd.DataFrame()
-all_line_results = pd.DataFrame()
-all_transformer_results = pd.DataFrame()
+# Define file path for export
+file_path = os.getcwd() + '\\ShortCircuitResults'
 
-# Get script path and make results directory
-script_path = os.getcwd()
-results_path = script_path + '\\LoadFlowResults\\'
+# Iterate through fault types
+for fault_type in fault_types:
+    # Iterate through maximum and minimum fault cases
+    for calculate in range(0, 2):
+        # Change fault calculation based on maximum or minimum case
+        if calculate == 0:
+            # Execute ShortCircuit maximum command
+            ShortCircuit(sc_set_name, fault_type=fault_type, calculate=calculate, set_select=True, op_scen=maximum)
+            # Define file name for export
+            file_name = 'ShortCircuitData_%s_%s' % (fault_type, 'Max')
+        else:
+            # Execute ShortCircuit minimum command
+            ShortCircuit(sc_set_name, fault_type=fault_type, calculate=calculate, set_select=True, op_scen=minimum)
+            # Define file name for export
+            file_name = 'ShortCircuitData_%s_%s' % (fault_type, 'Min')
 
-if not os.path.exists(results_path):
-    os.mkdir(results_path)
+        # Collect data based on fault type
+        if fault_type == '3psc':
+            # Collect objects data
+            sc_data = GetData(sc_set_name, sc3p_attributes)
+        elif fault_type == 'spgf':
+            # Collect objects data
+            sc_data = GetData(sc_set_name, scgf_attributes)
 
-# Iterate trough operation scenarios
-for operation_scenario in operation_scenarios:
-    # Execute LoadFlow command
-    LoadFlow(method=0, auto_tap=0, feeder_scaling=0, op_scen=operation_scenario)
-
-    # Collect objects data
-    terminal_df = GetData(terminal_set_name, terminal_attributes, result_headings=terminal_headings).result
-    line_df = GetData(line_set_name, line_attributes, result_headings=line_headings).result
-    transformer_df = GetData(transformer_set_name, transformer_attributes, result_headings=transformer_headings).result
-
-    # Insert column with operation scenario name
-    terminal_df.insert(0, 'Scenario', [operation_scenario] * terminal_df.shape[0])
-    line_df.insert(0, 'Scenario', [operation_scenario] * line_df.shape[0])
-    transformer_df.insert(0, 'Scenario', [operation_scenario] * transformer_df.shape[0])
-
-    # Append scenario results to master data frames
-    all_terminal_results = pd.concat([all_terminal_results, terminal_df])
-    all_line_results = pd.concat([all_line_results, line_df])
-    all_transformer_results = pd.concat([all_transformer_results, transformer_df])
-
-# Write results to xlsx workbook in separate sheets
-with pd.ExcelWriter(results_path + 'LoadFlowResults.xlsx') as writer:
-    all_terminal_results.to_excel(writer, sheet_name='Terminal', index=False)
-    all_line_results.to_excel(writer, sheet_name='Line', index=False)
-    all_transformer_results.to_excel(writer, sheet_name='Transformer', index=False)
-    app.PrintPlain('Load flow results written to: %s' % (results_path + 'LoadFlowResults.xlsx'))
+        # Export data
+        sc_data.export(file_name=file_name, file_path=file_path, replace=True)
