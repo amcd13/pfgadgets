@@ -392,16 +392,6 @@ class ShortCircuit:
         # Execute short circuit command
         shc.Execute()
 
-        # Get output window to check for errors
-        output_window = app.GetOutputWindow()
-        ow_contents = output_window.GetContent()
-        
-        try:
-            if 'not' in ow_contents[-1]:
-                raise Exception('Short-circuit not possible at: %s' % obj)
-        except IndexError:
-            pass
-
         if set_select is not None:
             app.PrintPlain('%s short-circuit calculation successfully executed @ %s' % (fault_type, name_dict))
             # Define class methods
