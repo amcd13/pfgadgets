@@ -82,7 +82,7 @@ class GetData:
 
         # Define column headings of results frame based on input
         if result_headings is None:
-            headings = ['Name'] + attribute_list
+            headings = attribute_list
         else:
             headings = result_headings
 
@@ -93,7 +93,7 @@ class GetData:
         for i in range(len(obj_dict)):
             obj = obj_dict[i]
             obj_type = type_dict[i]
-            results = [obj.loc_name]
+            results = []
 
             # Iterate through attributes
             for attribute in attribute_list:
@@ -200,7 +200,7 @@ class GetPlot:
         self.plot = plot
         self.title = set_desktop.GetContents('*.SetTitm')[0]
 
-    def export(self, file_type='wmf', file_path=None, frame=0, file_name=None, replace=False, scale=True):
+    def export(self, file_type='wmf', file_path=None, frame=0, file_name=None, replace=False, auto_scale=True):
         wr = app.GetFromStudyCase('ComWr')  # Get write command
         script_file_path = os.getcwd()  # Get file path of script
 
