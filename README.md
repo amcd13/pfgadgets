@@ -91,7 +91,7 @@ Description: This package is designed to assist in the use of python within the 
 - .title - Returns the title object that may be included in a plot page
 ---
 ### pfgadgets.GetPlot.export
-*__pfgadgets.GetPlot.export(file_type='wmf', file_path=None, frame = 0, file_name=None, replace=False)__*
+*__pfgadgets.GetPlot.export(file_type='wmf', file_path=None, frame = 0, file_name=None, replace=False, auto_scale=True)__*
 
 *Description*: Exports the plot page to the desired type and location
 
@@ -101,6 +101,7 @@ Description: This package is designed to assist in the use of python within the 
 - frame - Defines whether to include a page frame or not (0 - no frame, 1 - include frame)
 - file_name - Name of file that data will export to. Should not include file extension.
 - replace - Defines whether to replace existing files or not. (False - do not replace existing, True - replace existing)
+- auto_scale - Defines whether to perform automatic scaling before export (True - do auto scale, False - do not auto scale)
 ---
 ### pfgadgets.GetResult
 *__pfgadgets.GetResult(results_file, file_path=None, file_name='result', replace=None)__*
