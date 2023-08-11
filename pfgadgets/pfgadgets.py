@@ -200,15 +200,21 @@ class GetPlot:
         self.plot = plot
         self.title = set_desktop.GetContents('*.SetTitm')[0]
 
-    def export(self, file_type='wmf', file_path=None, frame=0, file_name=None, replace=False):
+    def export(self, file_type='wmf', file_path=None, frame=0, file_name=None, replace=False, scale=True):
         wr = app.GetFromStudyCase('ComWr')  # Get write command
         script_file_path = os.getcwd()  # Get file path of script
 
         # Show plot then scale axis/rebuild
         plot = self.plot
         plot.Show()
-        plot.DoAutoScaleX()
-        plot.DoAutoScaleY()
+
+        # Scale plot depending on scale input
+        if scale:
+            plot.DoAutoScaleX()
+            plot.DoAutoScaleY()
+        else:
+            pass
+        
         app.Rebuild(2)
 
         # Setup file name for export to either default (plot name) or custom
