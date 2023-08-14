@@ -76,7 +76,7 @@ def tx_util(tx_data):
 
     # Organising Results
     tx_util_frame['Tag Name'] = df['loc_name']
-    tx_util_frame['Nominal L-L Voltage (kV)'] = round(df['t:utrn_h']).astype(str)+'/'+round(df['t:utrn_l'],2).astype(str)
+    tx_util_frame['Nominal L-L Voltage (kV)'] = round(df['t:utrn_h']).astype(str)+'/'+round(df['t:utrn_l'], 2).astype(str)
     tx_util_frame['Rated Power (MVA)'] = df['Snom']
     tx_util_frame['Nominal Current (LV-Side) (kA)'] = round(df['Snom']/(df['t:utrn_l']*math.sqrt(3)), 3)
     tx_util_frame['Current Magnitude (LV-Side) (kA)'] = round(df['m:I:buslv'], 3)
@@ -85,71 +85,70 @@ def tx_util(tx_data):
 
     return tx_util_frame
 
-def FaultLevelSummaryTable(_3psc_Max, _3psc_Min, _spgf_Max, _spgf_Min):
+def fault_level_summary(max_3psc, min_3psc, max_spgf, min_spgf):
 
     # Initialise dataframes to store results
-    FaultLevelSummary = pd.DataFrame()
-    Max_3p = pd.DataFrame()
-    Min_3p = pd.DataFrame()
-    Max_1p = pd.DataFrame()
-    Min_1p = pd.DataFrame()
+    fl_summary_frame = pd.DataFrame()
+    max_3p = pd.DataFrame()
+    min_3p = pd.DataFrame()
+    max_1p = pd.DataFrame()
+    min_1p = pd.DataFrame()
 
-    Max_3p = copy.deepcopy(_3psc_Max)
-    Min_3p = copy.deepcopy(_3psc_Min)
-    Max_1p = copy.deepcopy(_spgf_Max)
-    Min_1p = copy.deepcopy(_spgf_Min)
+    max_3p = copy.deepcopy(max_3psc)
+    min_3p = copy.deepcopy(min_3psc)
+    max_1p = copy.deepcopy(max_spgf)
+    min_1p = copy.deepcopy(min_spgf)
 
     # Adding to each Data Frame for the merging process below 
-    Max_3p['3P (Ikss) Max (kA)'] = Max_3p['m:Ikss']
-    Min_3p['3P (Ikss) Min (kA)'] = Min_3p['m:Ikss']
-    Max_1p['1PG (Ikss) Max (kA)'] = Max_1p['m:Ikss:A']
-    Min_1p['1PG (Ikss) Min (kA)'] = Min_1p['m:Ikss:A']
+    max_3p['3P (Ikss) Max (kA)'] = max_3psc['m:Ikss']
+    min_3p['3P (Ikss) Min (kA)'] = min_3psc['m:Ikss']
+    max_1p['1PG (Ikss) Max (kA)'] = max_spgf['m:Ikss:A']
+    min_1p['1PG (Ikss) Min (kA)'] = min_spgf['m:Ikss:A']
 
     # Creating a Unique Filter Variable (This is needed when multipal scenarios are considered)
-    Max_3p['Filter'] = Max_3p['Name']+Max_3p['Scenario']
-    Min_3p['Filter'] = Min_3p['Name']+Min_3p['Scenario']
-    Max_1p['Filter'] = Max_1p['Name']+Max_1p['Scenario']
-    Min_1p['Filter'] = Min_1p['Name']+Min_1p['Scenario']
+    max_3p['Filter'] = max_3p['loc_name']+max_3p['Scenario']
+    min_3p['Filter'] = min_3p['loc_name']+min_3p['Scenario']
+    max_1p['Filter'] = max_1p['loc_name']+max_1p['Scenario']
+    min_1p['Filter'] = min_1p['loc_name']+min_1p['Scenario']
 
     # Organising Results
-    FaultLevelSummary['Filter'] =  Max_3p['Filter']
-    FaultLevelSummary['Name'] = Max_3p['Name']
-    FaultLevelSummary['Nominal Voltage (kV)'] = Max_3p['e:uknom'].round(2)
-    FaultLevelSummary['3P (Ikss) Max (kA)'] = Max_3p['3P (Ikss) Max (kA)']
-    FaultLevelSummary = pd.merge(FaultLevelSummary, Min_3p[['Filter', '3P (Ikss) Min (kA)']], on='Filter', how='inner').round(2)
-    FaultLevelSummary = pd.merge(FaultLevelSummary, Max_1p[['Filter', '1PG (Ikss) Max (kA)']], on='Filter', how='inner').round(2)
-    FaultLevelSummary = pd.merge(FaultLevelSummary, Min_1p[['Filter', '1PG (Ikss) Min (kA)']], on='Filter', how='inner').round(2)
-    FaultLevelSummary = pd.merge(FaultLevelSummary, Max_3p[['Filter', 'Scenario']], on='Filter', how='inner')
+    fl_summary_frame['Filter'] =  max_3p['Filter']
+    fl_summary_frame['Name'] = max_3p['loc_name']
+    fl_summary_frame['Nominal Voltage (kV)'] = round(max_3p['e:uknom'], 3)
+    fl_summary_frame['3P (Ikss) Max (kA)'] = max_3p['3P (Ikss) Max (kA)']
+    fl_summary_frame = round(pd.merge(fl_summary_frame, min_3p[['Filter', '3P (Ikss) Min (kA)']], on='Filter', how='inner'), 3)
+    fl_summary_frame = round(pd.merge(fl_summary_frame, max_1p[['Filter', '1PG (Ikss) Max (kA)']], on='Filter', how='inner'), 3)
+    fl_summary_frame = round(pd.merge(fl_summary_frame, min_1p[['Filter', '1PG (Ikss) Min (kA)']], on='Filter', how='inner'), 3)
+    fl_summary_frame = round(pd.merge(fl_summary_frame, max_3p[['Filter', 'Scenario']], on='Filter', how='inner'), 3)
     
     #Deleting the 'Filter' column
-    FaultLevelSummary.drop('Filter', axis=1, inplace=True) 
+    fl_summary_frame.drop('Filter', axis=1, inplace=True)
 
-    return FaultLevelSummary
+    return fl_summary_frame
 
-def SwitchboardShortCircuitThermalResultsTable(_Max3PSCData):
-    df = _Max3PSCData
+def sb_sc_thermal(max_3psc_data):
+    df = max_3psc_data
 
     # Initialise dataframes to store results
-    SwitchboardShortCircuitThermalResults = pd.DataFrame()
+    sb_sc_thermal_frame = pd.DataFrame()
 
     # Organising Results
-    SwitchboardShortCircuitThermalResults['Tag Name'] = df['Name']
+    sb_sc_thermal_frame['Tag Name'] = df['Name']
     condition = df['Ithlim'] > 0
-    SwitchboardShortCircuitThermalResults.loc[condition,'Rated Short-Time Thermal Current(kA/Sec)'] = df['Ithlim'].astype(str)+'kA/'+df['Tkr'].astype(str)+'s'
-    SwitchboardShortCircuitThermalResults.loc[~condition,'Rated Short-Time Thermal Current(kA/Sec)'] = 'NA'
-    SwitchboardShortCircuitThermalResults['Thermal Equivalent Short-Circuit Current (kA)'] = df['m:Ith'].round(2)
-    SwitchboardShortCircuitThermalResults['Rated Peak Withstand Current (kA)'] = df['Iplim']
-    SwitchboardShortCircuitThermalResults['Peak Short Circuit Current (kA)'] = df['m:Ip'].round(2)
-    SwitchboardShortCircuitThermalResults['3P Max (Ikss)']=df['m:Ikss'].round(2)
+    sb_sc_thermal_frame.loc[condition,'Rated Short-Time Thermal Current(kA/Sec)'] = df['Ithlim'].astype(str)+'kA/'+df['Tkr'].astype(str)+'s'
+    sb_sc_thermal_frame.loc[~condition,'Rated Short-Time Thermal Current(kA/Sec)'] = 'NA'
+    sb_sc_thermal_frame['Thermal Equivalent Short-Circuit Current (kA)'] = df['m:Ith'].round(2)
+    sb_sc_thermal_frame['Rated Peak Withstand Current (kA)'] = df['Iplim']
+    sb_sc_thermal_frame['Peak Short Circuit Current (kA)'] = df['m:Ip'].round(2)
+    sb_sc_thermal_frame['3P Max (Ikss)']=df['m:Ikss'].round(2)
     
 
     condition = (df['Ithlim'] > df['m:Ith']) & (df['Iplim'] > df['m:Ip']) & (df['Ithlim'] > 0)
-    SwitchboardShortCircuitThermalResults.loc[condition, 'Assessment'] = 'Pass'
-    SwitchboardShortCircuitThermalResults.loc[~condition, 'Assessment'] = 'Fail'
+    sb_sc_thermal_frame.loc[condition, 'Assessment'] = 'Pass'
+    sb_sc_thermal_frame.loc[~condition, 'Assessment'] = 'Fail'
     condition = df['Ithlim'] > 0
-    SwitchboardShortCircuitThermalResults.loc[~condition, 'Assessment'] = 'Not Assessed'
+    sb_sc_thermal_frame.loc[~condition, 'Assessment'] = 'Not Assessed'
 
-    SwitchboardShortCircuitThermalResults['Scenario'] = df['Scenario']
+    sb_sc_thermal_frame['Scenario'] = df['Scenario']
     
-    return SwitchboardShortCircuitThermalResults
-
+    return sb_sc_thermal_frame
