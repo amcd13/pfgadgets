@@ -24,7 +24,7 @@ app.ClearOutputWindow()
 # INPUTS
 
 # Define set names
-general_set_names = ['Terminals', 'Lines', 'Transformers', 'Harmonic Set']
+general_set_names = ['Terminals', 'Lines', 'Transformers', 'Circuit Breakers', 'Harmonic Set']
 sc_set_names = ['Short-Circuit Set']
 
 ############################################################

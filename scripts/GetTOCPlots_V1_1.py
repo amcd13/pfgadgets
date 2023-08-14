@@ -96,5 +96,5 @@ for i, term in enumerate(plot_dict):
             app.PrintPlain('\nTerminals remaining: %s' % j)
 
             # Define file name and export plot
-            file_name = '%s_%s_%s' % (terminal_name , fault_type, max_or_min)
+            file_name = '%s_%s_%s' % (terminal_name, fault_type, max_or_min)
             plot.export(file_path=path, file_name=file_name, replace=True)
