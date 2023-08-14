@@ -15,7 +15,7 @@ class CreateSet:
         else:
             # Get specified study case
             study_cases = app.GetProjectFolder('study').GetContents('*.IntCase', 1)
-            study_case = [k for k in study_cases if study_cases.loc_name == sc_name][0]
+            study_case = [k for k in study_cases if k.loc_name == sc_name][0]
 
         #Get all sets from study case
         all_sets = study_case.GetContents('*.SetSelect', 1)
