@@ -7,25 +7,34 @@ app = pf.GetApplication()
 
 # Define class to make sets
 class CreateSet:
-    def __init__(self, set_name, set_type=5, sc_name=None):
+    def __init__(self, set_name, set_type=5, sc_name=None, replace=True):
         # Determine if set should be built in active study case or specified by study case name
         if sc_name is None:
             # Get active study case
             study_case = app.GetActiveStudyCase()
+        else:
+            # Get specified study case
+            study_cases = app.GetProjectFolder('study').GetContents('*.IntCase', 1)
+            study_case = [k for k in study_cases if study_cases.loc_name == sc_name][0]
 
-            # Remove sets if duplicate
-            all_sets = study_case.GetContents('*.SetSelect')
-            for set in all_sets:
-                set_elm_name = set.loc_name
-                if set_elm_name == set_name:
+        #Get all sets from study case
+        all_sets = study_case.GetContents('*.SetSelect', 1)
+
+        # Remove sets if duplicate
+        for set in all_sets:
+            set_elm_name = set.loc_name
+            if set_elm_name == set_name:
+                if replace:
                     set.Delete()
                 else:
-                    pass
+                    app.PrintWarn('Set with name %s already exists' % set_name)
+            else:
+                pass
 
-            new_set = study_case.CreateObject('SetSelect', set_name)
-            new_set.iused = set_type
+        new_set = study_case.CreateObject('SetSelect', set_name)
+        new_set.iused = set_type
 
-            self.set = new_set
+        self.set = new_set
 
 
 # Define class for performing frequency sweep calculation
