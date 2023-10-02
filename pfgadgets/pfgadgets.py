@@ -84,7 +84,7 @@ class FrequencySweep:
         # Get frequency sweep command
         f_sweep = app.GetFromStudyCase('ComFsweep')
 
-        # If result input is given change to results input
+        # If result input is given change to 'results' input
         if results is not None:
             result_files = study_case.GetContents('*.ElmRes', 1)
             for resultFile in result_files:
