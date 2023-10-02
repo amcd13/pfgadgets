@@ -89,7 +89,7 @@ for operation_scenario in operation_scenarios:
                 fault_attributes = scgf_attributes
 
             # Execute ShortCircuit maximum command
-            ShortCircuit(sc_set_name, fault_type=fault_type, calculate=calculate, set_select=True, op_scen=operation_scenario)
+            ShortCircuit(sc_set_name, fault_type=fault_type, calculate=calculate, set_select=True).ex(op_scen=operation_scenario)
 
             # Get short circuit results
             sc_data = GetData(sc_set_name, fault_attributes).result

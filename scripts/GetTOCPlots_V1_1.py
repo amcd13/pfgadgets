@@ -33,14 +33,15 @@ maximum = 'Maximum Normal Load'
 minimum = 'Maximum Normal Load'
 
 # Define dictionary containing terminals to run short-circuit and associated devices to display in TOC plot
-plot_dict = [{'terminal': 'A0S01-SB-NF-001',              'plot': 'P0S01-SB-NF-001_A0S01-SB-NF-001'},
+plot_dict = [{'terminal': 'Terminal(2)', 'plot': 'External Grid_Terminal(2)'}]
+""""[{'terminal': 'A0S01-SB-NF-001',              'plot': 'P0S01-SB-NF-001_A0S01-SB-NF-001'},
              {'terminal': 'A0S01-TX-FB-001 HV Bushing',   'plot': 'P0S01-SB-NF-001_A0S01-SB-NB-001'},
              {'terminal': 'A0S01-SB-NB-001',              'plot': 'P0S01-SB-NF-001_A0S01-SB-NB-001'},
              {'terminal': 'A0S02-TX-FB-001 HV Bushing',   'plot': 'P0S01-SB-NF-001_A0S02-SB-NB-001'},
              {'terminal': 'A0S02-SB-NB-001',              'plot': 'P0S01-SB-NF-001_A0S02-SB-NB-001'},
              {'terminal': 'A0S01-TX-FB-002-RMU',          'plot': 'P0S01-SB-NF-001_A0S01-TX-FB-003-RMU'},
              {'terminal': 'A0S01-TX-FB-003-RMU',          'plot': 'P0S01-SB-NF-001_A0S01-TX-FB-003-RMU'},
-             {'terminal': 'A0S01-TX-FB-004-RMU',          'plot': 'P0S01-SB-NF-001_A0S01-TX-FB-004-RMU'}]
+             {'terminal': 'A0S01-TX-FB-004-RMU',          'plot': 'P0S01-SB-NF-001_A0S01-TX-FB-004-RMU'}]"""
 
 #############################################################
 
@@ -70,14 +71,14 @@ for i, term in enumerate(plot_dict):
             # Change fault calculation based on maximum or minimum case
             if calculate == 0:
                 # Execute ShortCircuit maximum command
-                ShortCircuit(terminal.loc_name, fault_type=fault_type, calculate=calculate, set_select=None,
+                ShortCircuit(terminal.loc_name, fault_type=fault_type, calculate=calculate, set_select=None).ex(
                              op_scen=maximum)
                 # Define file name for export
                 file_name = 'ShortCircuitData_%s_%s' % (fault_type, 'Max')
                 max_or_min = 'Maximum'
             else:
                 # Execute ShortCircuit minimum command
-                ShortCircuit(terminal.loc_name, fault_type=fault_type, calculate=calculate, set_select=None,
+                ShortCircuit(terminal.loc_name, fault_type=fault_type, calculate=calculate, set_select=None).ex(
                              op_scen=minimum)
                 # Define file name for export
                 file_name = 'ShortCircuitData_%s_%s' % (fault_type, 'Min')

@@ -123,7 +123,7 @@ if not os.path.exists(results_path):
 # Iterate trough operation scenarios
 for operation_scenario in operation_scenarios:
     # Execute LoadFlow command
-    LoadFlow(method=0, auto_tap=0, feeder_scaling=0, op_scen=operation_scenario)
+    LoadFlow(method=0, auto_tap=0, feeder_scaling=0).ex(op_scen=operation_scenario)
 
     # Collect objects data
     term_df = GetData(term_set_name, term_dict['attributes']).result

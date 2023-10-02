@@ -66,7 +66,7 @@ for i in range(2):
     frequency_file_name = 'FrequencySweep_%s' % (max_or_min[i])
 
     # Execute harmonic load flow
-    HarmonicLoadFlow()
+    HarmonicLoadFlow().ex()
 
     # Get harmonic load flow data and export
     harmonic_data = GetData(terminal_set_name, terminal_attributes)
@@ -77,7 +77,7 @@ for i in range(2):
     distortion_plot.export(file_path=path, file_name=harmonic_file_name, replace=True, frame=1)
 
     # Execute frequency sweep
-    FrequencySweep()
+    FrequencySweep().ex()
 
     # Export frequency sweep plot
     frequency_plot.export(file_path=path, file_name=frequency_file_name, replace=True, frame=1)

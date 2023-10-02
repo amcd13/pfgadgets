@@ -5,6 +5,39 @@ import pandas as pd
 app = pf.GetApplication()
 
 
+# Define class for performing Arc-Flash calculation
+class ArcFlash:
+    def __init__(self, location=None, method=0, sys_type=0, output=1, time=0):
+        # Get arc-flash command
+        af = app.GetFromStudyCase('ComArcflash')
+
+        # Initialise arc-flash command
+        af.iopt_arc = method
+        af.iopt_systp = sys_type
+        af.iopt_tfct = 1
+        af.MaxTime = 2
+        af.iEvtDriven = time
+        af.asc = output
+
+        if location is None:
+            af.iopt_loc = 1
+        else:
+            af.iopt_loc = 0
+            af.shcobj = location
+
+        # Define class methods
+        self.com = af
+
+    # Define class method for executing arc-flash command
+    def ex(self):
+        # Get arc-flash command object from init
+        af = self.com
+
+        # Execute arc-flash command
+        af.Execute()
+        app.PrintPlain('Arc-flash calculation successfully executed')
+
+
 # Define class to make sets
 class CreateSet:
     def __init__(self, set_name, set_type=5, sc_name=None, replace=True):
@@ -21,15 +54,15 @@ class CreateSet:
             except IndexError:
                 raise Exception('Could not find study case with name: %s' % sc_name)
 
-        #Get all sets from study case
+        # Get all sets from study case
         all_sets = study_case.GetContents('*.SetSelect', 1)
 
         # Remove sets if duplicate
-        for set in all_sets:
-            set_elm_name = set.loc_name
+        for sub_set in all_sets:
+            set_elm_name = sub_set.loc_name
             if set_elm_name == set_name:
                 if replace:
-                    set.Delete()
+                    sub_set.Delete()
                 else:
                     app.PrintWarn('Set with name %s already exists' % set_name)
             else:
@@ -38,6 +71,7 @@ class CreateSet:
         new_set = study_case.CreateObject('SetSelect', set_name)
         new_set.iused = set_type
 
+        # Define class attributes
         self.set = new_set
 
 
@@ -63,7 +97,15 @@ class FrequencySweep:
         f_sweep.fstart = start
         f_sweep.fstop = stop
 
-        # Execite frequency sweep
+        # Define class attributes
+        self.com = f_sweep
+
+    # Define class method for executing frequency sweep
+    def ex(self):
+        # Get frequency sweep command object from init
+        f_sweep = self.com
+
+        # Execute frequency sweep
         f_sweep.Execute()
         app.PrintPlain('Frequency sweep calculation successfully executed')
 
@@ -131,7 +173,7 @@ class GetData:
                 results.append(result)
             results_frame.loc[len(results_frame)] = results
 
-        # Define class methods
+        # Define class attributes
         self.obj = obj_dict
         self.name = name_dict
         self.attribute = attribute_list
@@ -210,9 +252,11 @@ class GetPlot:
         if len(plot_list) > 1:
             app.PrintWarn('More than one element found with name: %s' % plot_name)
 
+        # Define class attributes
         self.plot = plot
         self.title = set_desktop.GetContents('*.SetTitm')[0]
 
+    # Define class method for exporting plot page
     def export(self, file_type='wmf', file_path=None, frame=0, file_name=None, replace=False, auto_scale=True):
         wr = app.GetFromStudyCase('ComWr')  # Get write command
         script_file_path = os.getcwd()  # Get file path of script
@@ -222,12 +266,12 @@ class GetPlot:
         plot.Show()
 
         # Scale plot depending on scale input
-        if scale:
+        if auto_scale:
             plot.DoAutoScaleX()
             plot.DoAutoScaleY()
         else:
             pass
-        
+
         app.Rebuild(2)
 
         # Setup file name for export to either default (plot name) or custom
@@ -316,16 +360,36 @@ class HarmonicLoadFlow:
         hlf = app.GetFromStudyCase('ComHldf')
         hlf.iopt_net = method
 
+        # Define class attributes
+        self.com = hlf
+
+    # Define class method for executing harmonic load flow command
+    def ex(self):
+        # Get harmonic load flow command object from init
+        hlf = self.com
+
         # Execute harmonic load flow
         hlf.Execute()
         app.PrintPlain('Harmonic load flow successfully executed')
 
 
-# Define class for performing load flow calaculation
+# Define class for performing load flow calculation
 class LoadFlow:
-    def __init__(self, method=0, auto_tap=0, feeder_scaling=0, op_scen=None):
+    def __init__(self, method=0, auto_tap=0, feeder_scaling=0):
         # Get load flow command
         lf = app.GetFromStudyCase('ComLdf')
+
+        # Initialise load flow
+        lf.iopt_net = method
+        lf.iopt_at = auto_tap
+        lf.iopt_fls = feeder_scaling
+
+        # Define class attributes
+        self.com = lf
+
+    def ex(self, op_scen=None):
+        # Get load flow command from init
+        lf = self.com
 
         # Change operation scenario to either active case or opScen input
         if op_scen is not None:
@@ -337,11 +401,6 @@ class LoadFlow:
                 relevant_op_scen[0].Activate()
             else:
                 raise Exception('Cannot find operation scenario: %s' % op_scen)
-
-        # Initialise load flow
-        lf.iopt_net = method
-        lf.iopt_at = auto_tap
-        lf.iopt_fls = feeder_scaling
 
         # Execute load flow
         lf.Execute()
@@ -350,20 +409,9 @@ class LoadFlow:
 
 # Define class for performing short circuit calculation
 class ShortCircuit:
-    def __init__(self, object_name, fault_type='3psc', calculate=0, set_select=None, op_scen=None):
+    def __init__(self, object_name, fault_type='3psc', calculate=0, set_select=None):
         # Get study case
         studyCase = app.GetActiveStudyCase()
-
-        # Change operation scenario to either active case or opScen input
-        if op_scen is not None:
-            op_scens = app.GetProjectFolder('scen').GetContents('*.IntScenario', 1)
-            relevant_op_scen = [k for k in op_scens if k.loc_name == op_scen]
-
-            # Check if operation scenario was found
-            if relevant_op_scen:
-                relevant_op_scen[0].Activate()
-            else:
-                raise Exception('Cannot find operation scenario: %s' % op_scen)
 
         # Clean up short circuit objects in study case
         shc = studyCase.GetContents('*.SetTitm')
@@ -400,6 +448,9 @@ class ShortCircuit:
                 elementName = elementObject.loc_name
                 name_dict.append(elementName)
             shc.shcobj = general_set
+
+            self.obj = obj_dict
+            self.name = name_dict
         else:
             network_data = app.GetProjectFolder('netdat')
             try:
@@ -408,16 +459,40 @@ class ShortCircuit:
                 raise Exception('Unable to find element: %s' % object_name)
             shc.shcobj = obj
 
+            self.obj = obj
+            self.name = object_name
+
+        # Define class attributes
+        self.com = shc
+        self.select = set_select
+        self.f_type = fault_type
+
+    def ex(self, op_scen=None):
+        # Get short-circuit command from init
+        shc = self.com
+        set_select = self.select
+        name_dict = self.name
+
+        # Get fault type
+        fault_type = shc.GetAttribute('iopt_shc')
+
+        # Change operation scenario to either active case or op_scen input
+        if op_scen is not None:
+            op_scens = app.GetProjectFolder('scen').GetContents('*.IntScenario', 1)
+            relevant_op_scen = [k for k in op_scens if k.loc_name == op_scen]
+
+            # Check if operation scenario was found
+            if relevant_op_scen:
+                relevant_op_scen[0].Activate()
+            else:
+                raise Exception('Cannot find operation scenario: %s' % op_scen)
+
         # Execute short circuit command
         shc.Execute()
 
         if set_select is not None:
             app.PrintPlain('%s short-circuit calculation successfully executed @ %s' % (fault_type, name_dict))
-            # Define class methods
-            self.obj = obj_dict
-            self.name = name_dict
+            # Define class attributes
         else:
-            app.PrintPlain('%s short-circuit calculation successfully executed @ %s' % (fault_type, object_name))
-            # Define class methods
-            self.obj = obj
-            self.name = object_name
+            app.PrintPlain('%s short-circuit calculation successfully executed @ %s' % (fault_type, name_dict))
+            # Define class attributes
